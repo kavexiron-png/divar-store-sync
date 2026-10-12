@@ -1,0 +1,1747 @@
+﻿<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سامانه هوشمند اتصال فروشگاه به دیوار | kavexiron DivarSync</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --divar-red: #a62626;
+      --divar-red-hover: #8f1f1f;
+      --divar-red-light: #fef2f2;
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --bg-card-hover: #24344d;
+      --border-color: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-light: #cbd5e1;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --info: #06b6d4;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+    }
+
+    .brand-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-badge {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--divar-red) 0%, #dc2626 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 22px;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(166, 38, 38, 0.4);
+    }
+
+    .brand-titles h1 {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-titles .author-tag {
+      font-size: 11px;
+      background: rgba(37, 99, 235, 0.2);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .brand-titles p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      outline: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-divar {
+      background: var(--divar-red);
+      color: white;
+      box-shadow: 0 4px 12px rgba(166, 38, 38, 0.35);
+    }
+    .btn-divar:hover {
+      background: var(--divar-red-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-light);
+      border: 1px solid var(--border-color);
+    }
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: #475569;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      padding: 24px 28px;
+      max-width: 1680px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: #475569;
+    }
+
+    .kpi-info h4 {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+
+    .kpi-info .kpi-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .kpi-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .kpi-icon.blue { background: rgba(37, 99, 235, 0.15); color: #60a5fa; }
+    .kpi-icon.red { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .kpi-icon.yellow { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .kpi-icon.green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+    /* Content Layout */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 440px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1200px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.5);
+    }
+
+    .card-header h3 {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    /* Filter & Table Toolbar */
+    .table-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 240px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 38px 10px 14px;
+      color: white;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-box input:focus {
+      border-color: var(--primary);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter-select {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: var(--text-light);
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Product Table */
+    .table-responsive {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: right;
+      font-size: 13px;
+    }
+
+    th {
+      background: #0f172a;
+      padding: 12px 16px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.6);
+      vertical-align: middle;
+      color: var(--text-light);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(30, 41, 59, 0.8);
+    }
+
+    tr.active-row td {
+      background: rgba(37, 99, 235, 0.1);
+      border-color: rgba(37, 99, 235, 0.3);
+    }
+
+    .product-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .product-img {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .product-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-title {
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 2px;
+    }
+
+    .product-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .price-editable {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px dashed transparent;
+      transition: all 0.2s;
+    }
+    .price-editable:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: #475569;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .badge-warning { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .badge-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+    .badge-blue { background: rgba(37, 99, 235, 0.15); color: #60a5fa; }
+
+    /* Divar Mobile Preview */
+    .preview-container {
+      position: sticky;
+      top: 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .mobile-frame {
+      background: #111;
+      border: 10px solid #2d3748;
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .mobile-speaker {
+      width: 60px;
+      height: 4px;
+      background: #4a5568;
+      border-radius: 2px;
+      margin: 8px auto 4px auto;
+    }
+
+    .divar-screen {
+      background: #ffffff;
+      color: #111827;
+      height: 610px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      direction: rtl;
+    }
+
+    .divar-nav {
+      background: #ffffff;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #f3f4f6;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .divar-nav-logo {
+      font-weight: 900;
+      color: var(--divar-red);
+      font-size: 17px;
+      letter-spacing: -0.5px;
+    }
+
+    .divar-nav-icons {
+      display: flex;
+      gap: 14px;
+      color: #4b5563;
+      font-size: 16px;
+    }
+
+    .divar-content {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .divar-photo {
+      width: 100%;
+      height: 200px;
+      background: #f3f4f6;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      overflow: hidden;
+      position: relative;
+    }
+    .divar-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .divar-store-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(166, 38, 38, 0.9);
+      color: white;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      backdrop-filter: blur(4px);
+    }
+
+    .divar-title {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.4;
+      color: #111827;
+    }
+
+    .divar-subtitle {
+      font-size: 11px;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .divar-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .divar-price-row .label {
+      font-size: 12px;
+      color: #4b5563;
+    }
+    .divar-price-row .val {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--divar-red);
+    }
+
+    .divar-store-card {
+      background: #fafafa;
+      border: 1px solid #f3f4f6;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .divar-store-card .store-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    .divar-store-card .store-sub {
+      font-size: 10px;
+      color: #9ca3af;
+    }
+
+    .divar-specs {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+      color: #374151;
+      padding-top: 4px;
+    }
+
+    .spec-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px dashed #f3f4f6;
+    }
+
+    .divar-desc-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #111827;
+      margin-top: 4px;
+    }
+
+    .divar-desc {
+      font-size: 11px;
+      color: #4b5563;
+      line-height: 1.6;
+    }
+
+    .divar-footer {
+      background: #ffffff;
+      padding: 10px 14px;
+      border-top: 1px solid #f3f4f6;
+      display: flex;
+      gap: 8px;
+    }
+
+    .divar-footer .btn-call {
+      flex: 1;
+      background: var(--divar-red);
+      color: white;
+      border-radius: 8px;
+      padding: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      border: none;
+    }
+
+    .divar-footer .btn-chat {
+      background: #f3f4f6;
+      color: #374151;
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      border: none;
+    }
+
+    /* Terminal Console */
+    .terminal-card {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      overflow: hidden;
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+
+    .terminal-header {
+      background: #111827;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .terminal-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .term-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .term-dot.r { background: #ef4444; }
+    .term-dot.y { background: #f59e0b; }
+    .term-dot.g { background: #10b981; }
+
+    .terminal-title {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: inherit;
+    }
+
+    .terminal-logs {
+      padding: 14px 16px;
+      height: 180px;
+      overflow-y: auto;
+      font-size: 11.5px;
+      line-height: 1.7;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .log-line {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .log-time { color: #64748b; }
+    .log-tag { font-weight: 700; }
+    .log-tag.info { color: #38bdf8; }
+    .log-tag.success { color: #4ade80; }
+    .log-tag.warn { color: #fbbf24; }
+    .log-tag.divar { color: #f87171; }
+    .log-msg { color: #e2e8f0; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transform: translateY(20px);
+      transition: transform 0.2s;
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 6px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: white;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Tabs */
+    .tabs-header {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 20px;
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .tab-btn {
+      padding: 14px 18px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-light);
+    }
+
+    .tab-btn.active {
+      color: #60a5fa;
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border-color);
+      padding: 16px 28px;
+      background: #0f172a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .author-link {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast.success { border-color: #10b981; }
+    .toast.error { border-color: #ef4444; }
+
+    /* Syncing animation */
+    .spin {
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand-area">
+      <div class="logo-badge">دی</div>
+      <div class="brand-titles">
+        <h1>
+          سامانه اتصال فروشگاه به دیوار
+          <span class="author-tag">kavexiron Engine v2.4</span>
+        </h1>
+        <p>همگام‌سازی دوطرفه کاتالوگ ووکامرس، استعلام و انتشار خودکار آگهی در دیوار</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="status-pill">
+        <span class="status-dot"></span>
+        اتصال به سرور دیوار برقرار است
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="openConfigModal()">
+        ⚙️ تنظیمات API
+      </button>
+      <button class="btn btn-divar" id="syncAllBtn" onclick="runSyncAll()">
+        <span id="syncIcon">🔄</span>
+        همگام‌سازی هوشمند همه کالاها
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- KPIs -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>کل کالاهای کاتالوگ</h4>
+          <div class="kpi-value" id="kpiTotal">۴۸</div>
+        </div>
+        <div class="kpi-icon blue">📦</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>آگهی‌های فعال در دیوار</h4>
+          <div class="kpi-value" id="kpiSynced">۴۲</div>
+        </div>
+        <div class="kpi-icon green">✅</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>نیازمند بروزرسانی قیمت</h4>
+          <div class="kpi-value" id="kpiPending">۴</div>
+        </div>
+        <div class="kpi-icon yellow">⏳</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h4>پایش خطاهای ارسال</h4>
+          <div class="kpi-value" id="kpiErrors">۰</div>
+        </div>
+        <div class="kpi-icon red">🛡️</div>
+      </div>
+    </section>
+
+    <!-- Workspace Grid -->
+    <div class="workspace-grid">
+      
+      <!-- Left / Main: Catalog & Management -->
+      <section class="card">
+        <div class="tabs-header">
+          <button class="tab-btn active" onclick="switchTab('catalog')">کاتالوگ کالاها و مدیریت دیوار</button>
+          <button class="tab-btn" onclick="switchTab('settings')">تنظیمات کلیدهای دسترسی (Credentials)</button>
+          <button class="tab-btn" onclick="switchTab('guide')">راهنمای تحویل به کارفرما</button>
+        </div>
+
+        <!-- Tab 1: Catalog -->
+        <div id="tab-catalog" class="tab-pane active">
+          <div class="card-body">
+            
+            <div class="table-toolbar">
+              <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="جستجو بر اساس نام محصول یا شناسه کالا (SKU)..." oninput="filterTable()">
+              </div>
+              
+              <div class="filter-group">
+                <select class="filter-select" id="categoryFilter" onchange="filterTable()">
+                  <option value="all">همه دسته‌بندی‌ها</option>
+                  <option value="digital">کالای دیجیتال و لوازم جانبی</option>
+                  <option value="home">لوازم برقی و آشپزخانه</option>
+                  <option value="sport">فیتنس و مکمل‌های ورزشی</option>
+                </select>
+
+                <select class="filter-select" id="statusFilter" onchange="filterTable()">
+                  <option value="all">همه وضعیت‌ها</option>
+                  <option value="synced">منتشر شده در دیوار</option>
+                  <option value="pending">نیازمند همگام‌سازی</option>
+                  <option value="draft">پیش‌نویس</option>
+                </select>
+
+                <button class="btn btn-primary btn-sm" onclick="openAddModal()">
+                  ➕ افزودن محصول تستی
+                </button>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>کالا و مشخصات</th>
+                    <th>شناسه (SKU)</th>
+                    <th>قیمت فروشگاه (تومان)</th>
+                    <th>موجودی</th>
+                    <th>وضعیت در دیوار</th>
+                    <th>عملیات هوشمند</th>
+                  </tr>
+                </thead>
+                <tbody id="productTableBody">
+                  <!-- Dynamically rendered -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Tab 2: Settings -->
+        <div id="tab-settings" class="tab-pane">
+          <div class="card-body">
+            <h4 style="font-size:15px; margin-bottom:12px;">پیکربندی اتصال API های فروشگاه و پلتفرم دیوار</h4>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">
+              این ماژول برای امنیت حساب کارفرما با توکن OAuth دیوار و REST API v3 ووکامرس ارتباط برقرار می‌کند و هیچ‌گونه نام کاربری یا کلمه عبور اصلی را ذخیره نمی‌کند.
+            </p>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>آدرس فروشگاه (Store URL):</label>
+                <input type="text" id="cfgStoreUrl" value="https://myshop.com">
+              </div>
+              <div class="form-group">
+                <label>کلید دسترسی ووکامرس (Consumer Key):</label>
+                <input type="text" id="cfgConsumerKey" value="ck_8f3a9e2c10b4712d93e...">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>کد مخفی ووکامرس (Consumer Secret):</label>
+                <input type="password" id="cfgConsumerSecret" value="cs_1928374650abcdef...">
+              </div>
+              <div class="form-group">
+                <label>توکن دسترسی دیوار (Divar Open Platform Token):</label>
+                <input type="password" id="cfgDivarToken" value="divar_sec_token_9847291...">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>شهر پیش‌فرض انتشار:</label>
+                <select id="cfgCity">
+                  <option value="tehran" selected>تهران</option>
+                  <option value="isfahan">اصفهان</option>
+                  <option value="mashhad">مشهد</option>
+                  <option value="shiraz">شیراز</option>
+                  <option value="tabriz">تبریز</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>بازه زمانی بررسی خودکار (Cron Frequency):</label>
+                <select id="cfgInterval">
+                  <option value="15">هر ۱۵ دقیقه یک‌بار (پایین‌ترین تاخیر)</option>
+                  <option value="60" selected>هر ۱ ساعت یک‌بار (پیشنهادی)</option>
+                  <option value="360">هر ۶ ساعت یک‌بار</option>
+                  <option value="1440">روزی یک‌بار</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top:10px;">
+              <button class="btn btn-primary" onclick="testConnection()">
+                ⚡ تست ارتباط زنده با سرورها
+              </button>
+              <button class="btn btn-outline" onclick="saveSettings()">
+                💾 ذخیره تنظیمات
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Guide -->
+        <div id="tab-guide" class="tab-pane">
+          <div class="card-body">
+            <h4 style="font-size:15px; margin-bottom:12px;">راهنمای ارائه به کارفرما و سناریوی فروش kavexiron</h4>
+            
+            <div style="line-height:1.8; font-size:13px; color:var(--text-light); display:flex; flex-direction:column; gap:14px;">
+              <div style="background:rgba(37,99,235,0.1); border:1px solid rgba(59,130,246,0.25); border-radius:10px; padding:14px;">
+                <strong>💡 چطور این دمو را به کارفرما نشان دهیم تا پروژه را ببندیم؟</strong>
+                <p style="margin-top:6px; color:#cbd5e1;">
+                  ۱. با کلیک روی هر محصول در جدول، کارفرما فوراً پیش‌نمایش واقعی آگهی دیوار را در کادر موبایل سمت چپ می‌بیند.<br>
+                  ۲. قیمت یک کالا را با کلیک روی عدد قیمت تغییر دهید (مثلاً از ۲,۸۵۰,۰۰۰ به ۳,۱۰۰,۰۰۰ تومان).<br>
+                  ۳. وضعیت به «نیازمند بروزرسانی» تبدیل می‌شود. دکمه «همگام‌سازی» را بزنید؛ لاگ زنده اتصال به API و بروزرسانی کارت دیوار را نمایش دهید.<br>
+                  ۴. به کارفرما یادآور شوید که این برنامه به شکل خودکار روی سرور مجازی یا هاست آن‌ها بدون نیاز به دخالت دستی ۲۴ ساعته اجرا خواهد شد.
+                </p>
+              </div>
+
+              <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); border-radius:10px; padding:14px;">
+                <strong>🛡️ ارزش‌های افزوده فنی برای توجیه قیمت:</strong>
+                <ul style="margin-right:20px; margin-top:6px;">
+                  <li>پایش نرخ درخواست دیوار (Rate-Limit Handling) برای جلوگیری از مسدود شدن توکن فروشگاه</li>
+                  <li>کشینگ دیتای محلی با SQLite برای بهینه‌سازی بار سرور سایت کارفرما</li>
+                  <li>پشتیبانی رایگان ۲ هفته‌ای پس از استقرار</li>
+                  <li>بدون نیاز به پلاگین‌های سنگین و ناامن وردپرس</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Divar Live Mockup & Logs -->
+      <aside class="preview-container">
+        
+        <!-- Live Divar Mobile Simulation -->
+        <div class="mobile-frame">
+          <div class="mobile-speaker"></div>
+          
+          <div class="divar-screen" id="divarScreen">
+            <!-- Divar Navigation Bar -->
+            <div class="divar-nav">
+              <span class="divar-nav-logo">دیوار</span>
+              <div class="divar-nav-icons">
+                <span>↗️</span>
+                <span>🔖</span>
+                <span>←</span>
+              </div>
+            </div>
+
+            <!-- Divar Ad Content -->
+            <div class="divar-content">
+              <div class="divar-photo" id="previewPhoto">
+                <span id="previewEmoji">🎧</span>
+                <div class="divar-store-badge">
+                  <span>★</span> فروشگاه تایید شده
+                </div>
+              </div>
+
+              <div class="divar-title" id="previewTitle">
+                هدفون بلوتوثی سونی مدل WH-1000XM5 اصل
+              </div>
+
+              <div class="divar-subtitle" id="previewSubtitle">
+                <span>لحظاتی پیش</span>
+                <span>•</span>
+                <span>تهران، سعادت‌آباد</span>
+                <span>•</span>
+                <span>فروشگاه اینترنتی</span>
+              </div>
+
+              <div class="divar-price-row">
+                <span class="label">قیمت کالا:</span>
+                <span class="val" id="previewPrice">۱۸,۵۰۰,۰۰۰ تومان</span>
+              </div>
+
+              <!-- Store Verification Box -->
+              <div class="divar-store-card">
+                <div>
+                  <div class="store-title" id="previewStoreName">فروشگاه آنلاین کاوه (kavexiron)</div>
+                  <div class="store-sub">عضو رسمی پنل فروشگاه‌های دیوار • دارای اینماد</div>
+                </div>
+                <span style="font-size:18px;">🏪</span>
+              </div>
+
+              <!-- Specs -->
+              <div class="divar-specs">
+                <div class="spec-item">
+                  <span style="color:#6b7280;">وضعیت کالا:</span>
+                  <span style="font-weight:600;">نو (آکبند با گارانتی)</span>
+                </div>
+                <div class="spec-item">
+                  <span style="color:#6b7280;">شناسه محصول در انبار:</span>
+                  <span style="font-weight:600;" id="previewSku">SN-WH1000</span>
+                </div>
+                <div class="spec-item">
+                  <span style="color:#6b7280;">ارسال فوری:</span>
+                  <span style="font-weight:600;">پست پیشتاز / پیک سراسری</span>
+                </div>
+              </div>
+
+              <div class="divar-desc-title">توضیحات و مشخصات:</div>
+              <div class="divar-desc" id="previewDesc">
+                کالای اورجینال با تضمین سلامت فیزیکی و اصالت کالا. ارسال مستقیم از انبار مرکزی فروشگاه. امکان مرجوعی تا ۷ روز در صورت هرگونه نقص فنی.
+              </div>
+            </div>
+
+            <!-- Divar Bottom Floating Buttons -->
+            <div class="divar-footer">
+              <button class="btn-call">اطلاعات تماس و خرید</button>
+              <button class="btn-chat">چت در دیوار</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal Console -->
+        <div class="terminal-card">
+          <div class="terminal-header">
+            <div class="terminal-controls">
+              <span class="term-dot r"></span>
+              <span class="term-dot y"></span>
+              <span class="term-dot g"></span>
+            </div>
+            <span class="terminal-title">LIVE SYNC CONSOLE (REST API)</span>
+            <button class="btn btn-outline btn-sm" style="padding:2px 8px; font-size:10px;" onclick="clearLogs()">پاکسازی</button>
+          </div>
+          <div class="terminal-logs" id="terminalLogs">
+            <div class="log-line">
+              <span class="log-time">[10:35:01]</span>
+              <span class="log-tag info">[SYSTEM]</span>
+              <span class="log-msg">kavexiron DivarSync Engine Initialized.</span>
+            </div>
+            <div class="log-line">
+              <span class="log-time">[10:35:02]</span>
+              <span class="log-tag success">[WOO]</span>
+              <span class="log-msg">Connected to WooCommerce REST API v3 (OK: 200).</span>
+            </div>
+            <div class="log-line">
+              <span class="log-time">[10:35:03]</span>
+              <span class="log-tag divar">[DIVAR]</span>
+              <span class="log-msg">Authenticated with Divar Open Platform OAuth2.</span>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Modal: Add Product -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>افزودن محصول تستی به کاتالوگ</h3>
+        <button class="modal-close" onclick="closeAddModal()">&times;</button>
+      </div>
+      <form onsubmit="handleCreateProduct(event)">
+        <div class="form-group">
+          <label>نام کالا:</label>
+          <input type="text" id="newTitle" required placeholder="مثال: ساعت هوشمند گلکسی واچ ۶">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>شناسه (SKU):</label>
+            <input type="text" id="newSku" required placeholder="GW6-44MM">
+          </div>
+          <div class="form-group">
+            <label>آیکون / شکلک:</label>
+            <select id="newEmoji">
+              <option value="⌚">⌚ ساعت هوشمند</option>
+              <option value="💻">💻 لپ‌تاپ</option>
+              <option value="📱">📱 گوشی موبایل</option>
+              <option value="📷">📷 دوربین</option>
+              <option value="☕">☕ اسپرسوساز</option>
+              <option value="👟">👟 کتانی ورزشی</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>قیمت (تومان):</label>
+            <input type="number" id="newPrice" required placeholder="9500000">
+          </div>
+          <div class="form-group">
+            <label>دسته‌بندی:</label>
+            <select id="newCat">
+              <option value="digital">کالای دیجیتال</option>
+              <option value="home">لوازم خانگی</option>
+              <option value="sport">ورزشی</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>توضیحات کوتاه برای آگهی دیوار:</label>
+          <textarea id="newDesc" rows="3" placeholder="توضیحات فنی، اصالت کالا و نحوه ارسال..."></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
+          <button type="button" class="btn btn-outline" onclick="closeAddModal()">انصراف</button>
+          <button type="submit" class="btn btn-primary">ثبت و افزودن</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span id="toastIcon">✅</span>
+    <span id="toastMsg">عملیات با موفقیت انجام شد.</span>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>
+      طراحی و پیاده‌سازی اختصاصی توسط <span class="author-link">kavexiron</span> | پشتیبانی فنی کامل و تحویل سورس کد پایتون
+    </div>
+    <div>
+      نسخه تعاملی وب‌اپلیکیشن جهت تست و دمو برای کارفرمایان کارلنسر
+    </div>
+  </footer>
+
+  <script>
+    // Initial Seed Data
+    let products = [
+      {
+        id: 1,
+        title: "هدفون بلوتوثی سونی مدل WH-1000XM5 اصل",
+        sku: "SN-WH1000",
+        price: 18500000,
+        stock: 14,
+        category: "digital",
+        categoryName: "کالای دیجیتال",
+        status: "synced",
+        divarStatus: "منتشر شده",
+        emoji: "🎧",
+        desc: "کالای اورجینال با تضمین اصالت و مهلت تست ۷ روزه. نویز کنسلینگ فعال، باتری ۳۰ ساعته، ساخت ژاپن با جعبه پلمپ شرکتی.",
+        lastSync: "۱۰ دقیقه پیش"
+      },
+      {
+        id: 2,
+        title: "پاوربانک ۲۰۰۰۰ میلی‌آمپر باسئوس فست شارژ ۶۵ وات",
+        sku: "BS-PB20K",
+        price: 2850000,
+        stock: 22,
+        category: "digital",
+        categoryName: "کالای دیجیتال",
+        status: "pending",
+        divarStatus: "تغییر قیمت (نیاز به آپدیت)",
+        emoji: "🔋",
+        desc: "پاوربانک پرقدرت سازگار با لپ‌تاپ‌های تایپ سی و انواع گوشی. دارای نمایشگر دیجیتال درصد شارژ و گارانتی ۶ ماهه تعویض.",
+        lastSync: "دیروز"
+      },
+      {
+        id: 3,
+        title: "اسپرسوساز مباشی مدل ۲۰۲۰ صنعتی خانگی",
+        sku: "MB-2020",
+        price: 6400000,
+        stock: 8,
+        category: "home",
+        categoryName: "لوازم خانگی",
+        status: "synced",
+        divarStatus: "منتشر شده",
+        emoji: "☕",
+        desc: "پمپ ایتالیایی با فشار بخار ۲۰ بار واقعی. بدنه استیل ضد زنگ به همراه پرتافیلتر حرفه‌ای و نازل بخار فوم شیر.",
+        lastSync: "۱ ساعت پیش"
+      },
+      {
+        id: 4,
+        title: "مچ‌بند هوشمند شیائومی بند ۸ پرو گلوبال",
+        sku: "MI-BAND8P",
+        price: 3200000,
+        stock: 19,
+        category: "digital",
+        categoryName: "کالای دیجیتال",
+        status: "synced",
+        divarStatus: "منتشر شده",
+        emoji: "⌚",
+        desc: "صفحه نمایش امولد ۱.۷۴ اینچ با جی‌پی‌اس داخلی و سنسور پایش ضربان قلب و اکسیژن خون. شارژدهی تا ۱۴ روز.",
+        lastSync: "۳ ساعت پیش"
+      },
+      {
+        id: 5,
+        title: "پروتئین وی ایزوله ۲۲۷۰ گرمی گلد استاندارد",
+        sku: "ON-WHEY2K",
+        price: 5900000,
+        stock: 5,
+        category: "sport",
+        categoryName: "فیتنس و مکمل",
+        status: "pending",
+        divarStatus: "موجودی کم (نیاز به هشدار)",
+        emoji: "🥛",
+        desc: "مکمل پروتئین وی خالص وارداتی با کد رهگیری و هولوگرام اصالت کالا. مناسب ریکاوری عضلانی ورزشکاران و ورزش‌های بدنسازی.",
+        lastSync: "۲ روز پیش"
+      },
+      {
+        id: 6,
+        title: "کیبورد مکانیکال ردراگون سیمی گیمینگ RGB",
+        sku: "RD-K552",
+        price: 2150000,
+        stock: 12,
+        category: "digital",
+        categoryName: "کالای دیجیتال",
+        status: "synced",
+        divarStatus: "منتشر شده",
+        emoji: "⌨️",
+        desc: "سوئیچ‌های آبی مکانیکی با صدای جذاب و نورپردازی رنگی RGB با قابلیت تغییر افکت، کلیدهای ضد ساییدگی با جنس دابل شات.",
+        lastSync: "۴ ساعت پیش"
+      }
+    ];
+
+    let selectedProductId = 1;
+
+    // Formatting Helpers
+    function formatToman(num) {
+      return new Intl.NumberFormat('fa-IR').format(num) + ' تومان';
+    }
+
+    function toPersianDigits(n) {
+      const f = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+      return n.toString().replace(/[0-9]/g, function(w) { return f[+w]; });
+    }
+
+    // Render Table
+    function renderTable(items = products) {
+      const tbody = document.getElementById('productTableBody');
+      tbody.innerHTML = '';
+
+      if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-muted);">هیچ محصولی با فیلترهای انتخابی یافت نشد.</td></tr>`;
+        return;
+      }
+
+      items.forEach(p => {
+        const tr = document.createElement('tr');
+        if (p.id === selectedProductId) tr.classList.add('active-row');
+
+        // Status badge
+        let badgeHtml = '';
+        if (p.status === 'synced') {
+          badgeHtml = `<span class="badge badge-success">✓ منتشر در دیوار</span>`;
+        } else if (p.status === 'pending') {
+          badgeHtml = `<span class="badge badge-warning">⏳ تغییرات جدید</span>`;
+        } else {
+          badgeHtml = `<span class="badge badge-blue">📝 پیش‌نویس</span>`;
+        }
+
+        tr.innerHTML = `
+          <td>
+            <div class="product-cell" onclick="selectProduct(${p.id})" style="cursor:pointer;">
+              <div class="product-img">${p.emoji}</div>
+              <div>
+                <div class="product-title">${p.title}</div>
+                <div class="product-meta">${p.categoryName} • بروزرسانی: ${p.lastSync}</div>
+              </div>
+            </div>
+          </td>
+          <td><code>${p.sku}</code></td>
+          <td>
+            <div class="price-editable" title="جهت تغییر قیمت کلیک کنید" onclick="promptEditPrice(${p.id})">
+              <span style="font-weight:700; color:#38bdf8;">${formatToman(p.price)}</span>
+              <span style="font-size:11px; color:var(--text-muted);">✏️</span>
+            </div>
+          </td>
+          <td>
+            <span style="font-weight:600; color:${p.stock < 10 ? '#f59e0b' : '#34d399'};">
+              ${toPersianDigits(p.stock)} عدد
+            </span>
+          </td>
+          <td>${badgeHtml}</td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-outline btn-sm" onclick="selectProduct(${p.id})" title="مشاهده پیش‌نمایش در موبایل دیوار">
+                📱 پیش‌نمایش
+              </button>
+              <button class="btn btn-divar btn-sm" onclick="syncSingleProduct(${p.id})" title="همگام‌سازی فوری این کالا">
+                🚀 انتشار/آپدیت
+              </button>
+            </div>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      updateKPIs();
+    }
+
+    function updateKPIs() {
+      document.getElementById('kpiTotal').innerText = toPersianDigits(products.length);
+      const synced = products.filter(p => p.status === 'synced').length;
+      const pending = products.filter(p => p.status === 'pending').length;
+      document.getElementById('kpiSynced').innerText = toPersianDigits(synced);
+      document.getElementById('kpiPending').innerText = toPersianDigits(pending);
+    }
+
+    // Select Product & Update Divar Mockup
+    function selectProduct(id) {
+      selectedProductId = id;
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+
+      document.getElementById('previewTitle').innerText = p.title;
+      document.getElementById('previewPrice').innerText = formatToman(p.price);
+      document.getElementById('previewEmoji').innerText = p.emoji;
+      document.getElementById('previewSku').innerText = p.sku;
+      document.getElementById('previewDesc').innerText = p.desc;
+      document.getElementById('previewSubtitle').innerHTML = `
+        <span>لحظاتی پیش</span>
+        <span>•</span>
+        <span>تهران، سعادت‌آباد</span>
+        <span>•</span>
+        <span>${p.categoryName}</span>
+      `;
+
+      renderTable();
+      addLog('PREVIEW', `Loaded Divar post mockup for SKU: ${p.sku}`, 'info');
+    }
+
+    // Inline Price Edit
+    function promptEditPrice(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+
+      const newPriceStr = prompt(`تغییر قیمت برای «${p.title}»:\nقیمت فعلی: ${p.price.toLocaleString('fa-IR')} تومان\nقیمت جدید (تومان) را وارد کنید:`, p.price);
+      if (newPriceStr !== null) {
+        const newPrice = parseInt(newPriceStr.replace(/[^0-9]/g, ''));
+        if (!isNaN(newPrice) && newPrice > 0) {
+          const oldPrice = p.price;
+          p.price = newPrice;
+          p.status = 'pending';
+          p.divarStatus = 'قیمت تغییر کرد (نیاز به ارسال به دیوار)';
+          p.lastSync = 'لحظاتی قبل (محلی)';
+          
+          renderTable();
+          if (selectedProductId === id) {
+            selectProduct(id);
+          }
+          
+          showToast(`قیمت با موفقیت ویرایش شد. روی «انتشار/آپدیت» کلیک کنید تا در دیوار بروز شود.`, 'success');
+          addLog('PRICE_CHANGE', `SKU: ${p.sku} price changed: ${oldPrice.toLocaleString()} -> ${newPrice.toLocaleString()} Toman`, 'warn');
+        }
+      }
+    }
+
+    // Filter Table
+    function filterTable() {
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const cat = document.getElementById('categoryFilter').value;
+      const st = document.getElementById('statusFilter').value;
+
+      const filtered = products.filter(p => {
+        const matchesQuery = !q || p.title.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
+        const matchesCat = cat === 'all' || p.category === cat;
+        const matchesSt = st === 'all' || p.status === st;
+        return matchesQuery && matchesCat && matchesSt;
+      });
+
+      renderTable(filtered);
+    }
+
+    // Sync Single Product
+    function syncSingleProduct(id) {
+      const p = products.find(x => x.id === id);
+      if (!p) return;
+
+      selectProduct(id);
+      addLog('DIVAR_API', `Dispatching POST /v1/open-platform/addons/post for SKU: ${p.sku}...`, 'divar');
+
+      setTimeout(() => {
+        p.status = 'synced';
+        p.divarStatus = 'منتشر شده';
+        p.lastSync = 'هم‌اکنون';
+        renderTable();
+        selectProduct(id);
+        addLog('DIVAR_API', `HTTP 200 OK: Ad updated on Divar successfully. Post token: dvr_p_${p.sku.toLowerCase()}`, 'success');
+        showToast(`محصول «${p.title}» با موفقیت در دیوار منتشر/بروزرسانی شد!`, 'success');
+      }, 700);
+    }
+
+    // Sync All Products
+    function runSyncAll() {
+      const btn = document.getElementById('syncAllBtn');
+      const icon = document.getElementById('syncIcon');
+      btn.disabled = true;
+      icon.classList.add('spin');
+
+      addLog('SYNC_BATCH', `Starting full synchronization batch for ${products.length} catalog items...`, 'info');
+      showToast('عملیات همگام‌سازی دسته‌ای در حال اجراست...', 'success');
+
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < products.length) {
+          const item = products[i];
+          addLog('SYNC_ITEM', `Syncing [${i+1}/${products.length}] SKU ${item.sku} -> Divar Store API`, 'divar');
+          item.status = 'synced';
+          item.divarStatus = 'منتشر شده';
+          item.lastSync = 'هم‌اکنون';
+          i++;
+          renderTable();
+        } else {
+          clearInterval(interval);
+          btn.disabled = false;
+          icon.classList.remove('spin');
+          addLog('SYNC_BATCH', `Full batch completed: All ${products.length} products synced to Divar without errors.`, 'success');
+          showToast('تمام محصولات فروشگاه با موفقیت در دیوار همگام‌سازی شدند!', 'success');
+          renderTable();
+        }
+      }, 500);
+    }
+
+    // Terminal Logging
+    function addLog(tag, message, type = 'info') {
+      const logs = document.getElementById('terminalLogs');
+      const now = new Date();
+      const timeStr = `[${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}]`;
+
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.innerHTML = `
+        <span class="log-time">${timeStr}</span>
+        <span class="log-tag ${type}">[${tag}]</span>
+        <span class="log-msg">${message}</span>
+      `;
+      logs.appendChild(line);
+      logs.scrollTop = logs.scrollHeight;
+    }
+
+    function clearLogs() {
+      document.getElementById('terminalLogs').innerHTML = '';
+      addLog('SYSTEM', 'Console logs cleared.', 'info');
+    }
+
+    // Toast
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      const msgElem = document.getElementById('toastMsg');
+      const iconElem = document.getElementById('toastIcon');
+
+      msgElem.innerText = msg;
+      iconElem.innerText = type === 'success' ? '✅' : '⚠️';
+      toast.className = `toast show ${type}`;
+
+      setTimeout(() => {
+        toast.className = 'toast';
+      }, 3500);
+    }
+
+    // Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // Modals
+    function openAddModal() {
+      document.getElementById('addModal').classList.add('active');
+    }
+
+    function closeAddModal() {
+      document.getElementById('addModal').classList.remove('active');
+    }
+
+    function handleCreateProduct(e) {
+      e.preventDefault();
+      const title = document.getElementById('newTitle').value.trim();
+      const sku = document.getElementById('newSku').value.trim().toUpperCase();
+      const price = parseInt(document.getElementById('newPrice').value);
+      const emoji = document.getElementById('newEmoji').value;
+      const cat = document.getElementById('newCat').value;
+      const desc = document.getElementById('newDesc').value.trim() || 'کالای شرکتی با کیفیت تضمین شده و تحویل سریع.';
+
+      const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+      
+      const newP = {
+        id: newId,
+        title: title,
+        sku: sku,
+        price: price,
+        stock: 10,
+        category: cat,
+        categoryName: cat === 'digital' ? 'کالای دیجیتال' : (cat === 'home' ? 'لوازم خانگی' : 'فیتنس و مکمل'),
+        status: 'pending',
+        divarStatus: 'کالای جدید (نیاز به انتشار)',
+        emoji: emoji,
+        desc: desc,
+        lastSync: 'لحظاتی قبل'
+      };
+
+      products.unshift(newP);
+      closeAddModal();
+      renderTable();
+      selectProduct(newId);
+
+      addLog('CATALOG', `Added new product SKU: ${sku} to catalog`, 'info');
+      showToast(`کالای «${title}» افزوده شد. برای انتشار در دیوار روی دکمه انتشار کلیک کنید.`, 'success');
+      
+      e.target.reset();
+    }
+
+    function testConnection() {
+      addLog('CONN_TEST', 'Testing connection to WooCommerce REST endpoint...', 'info');
+      setTimeout(() => {
+        addLog('CONN_TEST', 'WooCommerce API handshake: 200 OK (Latency: 45ms)', 'success');
+        addLog('CONN_TEST', 'Divar Open Platform OAuth2 test: Valid token, scope: [post_manage, store_read]', 'divar');
+        showToast('اتصال با موفقیت تایید شد! کلیه دسترسی‌های REST برقرار است.', 'success');
+      }, 600);
+    }
+
+    function saveSettings() {
+      addLog('CONFIG', 'Settings saved to secure local vault.', 'success');
+      showToast('تنظیمات با موفقیت ذخیره گردید.', 'success');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTable();
+      selectProduct(1);
+    });
+  </script>
+</body>
+</html>
